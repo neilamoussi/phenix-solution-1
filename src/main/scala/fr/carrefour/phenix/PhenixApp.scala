@@ -25,14 +25,9 @@ object PhenixApp extends PhenixAppOptions {
     weekTopCA.foreach(println)
   }
 
-
-  //override def main(args: Array[String]): Unit = {
     val options = parseCmdLineArgs(args)
     val inputFolder  =  options(inputFolderOption)
     process(inputFolder)
-
-  //}
-
 
 
 }

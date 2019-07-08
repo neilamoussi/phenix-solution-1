@@ -1,8 +1,6 @@
 package fr.carrefour.phenix.file
 
 import java.io.PrintWriter
-import java.nio.file.Path
-
 import fr.carrefour.phenix.model.{DaySales, WeekCA}
 import fr.carrefour.phenix.utils.Utils
 
