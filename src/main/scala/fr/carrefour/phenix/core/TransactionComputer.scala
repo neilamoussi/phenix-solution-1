@@ -20,7 +20,6 @@ class TransactionComputer {
     transactions.map(line => transformToTransaction(line))
   }
 
-
   def getDaysSales(transactions: Stream[Transaction]): Stream[DaySales] = {
     transactions
       .groupBy(transaction => (transaction.shopUuid, transaction.datetime, transaction.productId))
@@ -46,14 +45,13 @@ class TransactionComputer {
 
   }
 
-  // input le bon stream de produit
-  def getShopDaysCa(transactions: Stream[Transaction], products: Map[String, Stream[Product]]): Stream[DayCA] = {
+  def getShopDaysTurnover(transactions: Stream[Transaction], products: Map[String, Stream[Product]]): Stream[DayTurnover] = {
     getDaysSales(transactions)
-      .map(sales => computeDayCA(sales, products))
+      .map(sales => computeDayTurnover(sales, products))
   }
 
-  def computeDayCA(daySales: DaySales, products: Map[String, Stream[Product]]): DayCA = {
-    DayCA(daySales.shopUuid,
+  def computeDayTurnover(daySales: DaySales, products: Map[String, Stream[Product]]): DayTurnover = {
+    DayTurnover(daySales.shopUuid,
       daySales.date,
       daySales.productId,
       daySales.quantity,
@@ -61,30 +59,28 @@ class TransactionComputer {
     )
   }
 
-  def computeWeekCA(dayCA: DayCA): WeekCA = {
-    WeekCA(dayCA.shopUuid, dayCA.date, dayCA.productId, dayCA.ca)
+  def computeWeekTurnover(dayTurnover: DayTurnover): WeekTurnover = {
+    WeekTurnover(dayTurnover.shopUuid, dayTurnover.date, dayTurnover.productId, dayTurnover.turnover)
   }
 
-  def getShopWeekTopCA(shopUuid: String, weekCA: Stream[WeekCA]): Stream[WeekCA] = {
-    val weekTopCA = weekCA.filter(sales => sales.shopUuid == shopUuid)
-      .sortBy(_.ca)(Ordering[Double].reverse)
+  def getShopWeekTopTurnover(shopUuid: String, weekTurnover: Stream[WeekTurnover]): Stream[WeekTurnover] = {
+    val weekTopTurnover = weekTurnover.filter(sales => sales.shopUuid == shopUuid)
+      .sortBy(_.turnover)(Ordering[Double].reverse)
       .take(100)
-    FileWriter.writeCA(Utils.now.toString, shopUuid, weekTopCA)
-    weekTopCA
+    FileWriter.writeWeekTurnover(Utils.now.toString, shopUuid, weekTopTurnover)
+    weekTopTurnover
   }
 
-  def getWeekTopCA(dayCA: Stream[DayCA]): Stream[WeekCA] = {
-    val weekCA = dayCA.filter(sales => Utils.compareTo7(sales.date))
+  def getWeekTopTurnover(dayTurnover: Stream[DayTurnover]): Stream[WeekTurnover] = {
+    val weekTurnover = dayTurnover.filter(sales => Utils.compareTo7(sales.date))
       .groupBy(sales => (sales.shopUuid, sales.productId))
-      .mapValues(sales => sales.map(_.ca).sum)
-      .map(sales => WeekCA(sales._1._1, Utils.now, sales._1._2, sales._2 ))
+      .mapValues(sales => sales.map(_.turnover).sum)
+      .map(sales => WeekTurnover(sales._1._1, Utils.now, sales._1._2, sales._2 ))
       .toStream
 
-    weekCA.map(sales => sales.shopUuid)
+    weekTurnover.map(sales => sales.shopUuid)
       .distinct
-      .flatMap(shopUuid => getShopWeekTopCA(shopUuid, weekCA))
-
+      .flatMap(shopUuid => getShopWeekTopTurnover(shopUuid, weekTurnover))
   }
-
 
 }

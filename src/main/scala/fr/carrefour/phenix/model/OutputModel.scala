@@ -4,5 +4,5 @@ import java.time.LocalDate
 
 case class Transactions(transactions: Stream[Transaction])
 case class DaySales(shopUuid: String, date: LocalDate, productId: Int, quantity: Int)
-case class DayCA(shopUuid: String, date: LocalDate,  productId: Int, quantity: Int, ca: Double)
-case class WeekCA(shopUuid: String, date: LocalDate, productId: Int, ca: Double)
+case class DayTurnover(shopUuid: String, date: LocalDate, productId: Int, quantity: Int, turnover: Double)
+case class WeekTurnover(shopUuid: String, date: LocalDate, productId: Int, turnover: Double)

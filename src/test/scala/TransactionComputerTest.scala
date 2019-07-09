@@ -72,12 +72,12 @@ class TransactionComputerTest extends FunSuite{
       "shop_2_" + Utils.dateToString(day_3) -> streamS2Procuts_2D_BEFORE)
 
 
-    val dayShopCa = transactionComputer.getShopDaysCa(streamTransaction, mapProducts)
-    val weekTopCA = transactionComputer.getWeekTopCA(dayShopCa)
+    val dayShopTurnover = transactionComputer.getShopDaysTurnover(streamTransaction, mapProducts)
+    val weekTopTurnover = transactionComputer.getWeekTopTurnover(dayShopTurnover)
 
-    assert(weekTopCA.filter(x => x.shopUuid == "shop_1").size == 3)
-    assert(weekTopCA.filter(x => x.shopUuid == "shop_1").map(x => x.ca).max == 10 * 5.0)
-    assert(weekTopCA.filter(x => x.shopUuid == "shop_2").map(x => x.ca).max == 1 * 100.0 + 1 * 10.0)
+    assert(weekTopTurnover.filter(x => x.shopUuid == "shop_1").size == 3)
+    assert(weekTopTurnover.filter(x => x.shopUuid == "shop_1").map(x => x.turnover).max == 10 * 5.0)
+    assert(weekTopTurnover.filter(x => x.shopUuid == "shop_2").map(x => x.turnover).max == 1 * 100.0 + 1 * 10.0)
 
   }
   // TODO writer & reader Test

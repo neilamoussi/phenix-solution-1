@@ -20,9 +20,9 @@ object PhenixApp extends PhenixAppOptions {
     val topSales = transactionComputer.getDayTopSales(daySales)
     topSales.foreach(println)
 
-    val dayShopCa = transactionComputer.getShopDaysCa(streamAsTransactions, streamAsProducts)
-    val weekTopCA = transactionComputer.getWeekTopCA(dayShopCa)
-    weekTopCA.foreach(println)
+    val dayShopTurnover = transactionComputer.getShopDaysTurnover(streamAsTransactions, streamAsProducts)
+    val weekTopTurnover = transactionComputer.getWeekTopTurnover(dayShopTurnover)
+    weekTopTurnover.foreach(println)
   }
 
     val options = parseCmdLineArgs(args)
