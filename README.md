@@ -20,3 +20,8 @@ or
 or
 `sbt run "--input_folder INPUT_FOLDER"`
 
+
+### Todo
+
+Large files are splitted to be processed, but this approach will have a limit with scala stream type. (Data loaded into memory)
+Iterator cannot be used in this project state (Need to refactor)
