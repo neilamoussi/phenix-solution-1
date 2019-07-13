@@ -1,6 +1,7 @@
 package fr.carrefour.phenix.file
 
 import java.io.PrintWriter
+
 import fr.carrefour.phenix.model.{DaySales, WeekTurnover}
 import fr.carrefour.phenix.utils.Utils
 
@@ -32,6 +33,18 @@ object FileWriter {
       content.productId + SEPARATOR +
       content.turnover + LINE_SEPARATOR))
     writer.close()
+  }
+
+  def splitFile(input: Iterator[String], output_path: String, linesPerFile: Int): Unit = {
+    if (input.hasNext) {
+      val header = List(input.next())
+      for ((i, lines) <- Iterator.from(1) zip input.grouped(linesPerFile)) {
+
+        val out = new PrintWriter(s"${output_path}_part_${i}")
+        (header.iterator ++ lines.iterator).foreach(out.println)
+        out.close
+      }
+    }
   }
 
   def generateDayTopSalesFileName(date: String, shopUuid: String): String = {
